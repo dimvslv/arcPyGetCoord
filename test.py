@@ -10,6 +10,10 @@ def get_unique_name(base_name):
         count += 1
     return name
 
+def make_annotation_line(line, x, y):
+    with arcpy.da.InsertCursor(name_line, ["SHAPE@", "longitude", "latitude"]) as cursor:
+        cursor.insertRow([line, x, y])
+
 mxd = arcpy.mapping.MapDocument("CURRENT")
 layers = arcpy.mapping.ListLayers(mxd)
 
@@ -23,21 +27,26 @@ for layer in layers:
 if not selected_layer:
     pythonaddins.MessageBox("Select features to get coordinates", "Info", 0)
 
-name = get_unique_name('vertices')
+name_vertices = get_unique_name('vertices')
+name_line = get_unique_name('line')
 srid = arcpy.Describe(selected_layer).spatialReference
 
 # if arcpy.Exists(r'in_memory\vertices'):
 # arcpy.Delete_management(r'in_memory\vertices')
 
-arcpy.CreateFeatureclass_management('in_memory', name, "POINT", spatial_reference=srid)
-arcpy.AddField_management(name, "longitude", "DOUBLE")
-arcpy.AddField_management(name, "latitude", "DOUBLE")
+arcpy.CreateFeatureclass_management('in_memory', name_vertices, "POINT", spatial_reference=srid)
+arcpy.AddField_management(name_vertices, "longitude", "DOUBLE")
+arcpy.AddField_management(name_vertices, "latitude", "DOUBLE")
+
+arcpy.CreateFeatureclass_management('in_memory', name_line, "POLYLINE", spatial_reference=srid)
+arcpy.AddField_management(name_line, "longitude", "DOUBLE")
+arcpy.AddField_management(name_line, "latitude", "DOUBLE")
 
 edit = arcpy.da.Editor('in_memory')
 edit.startEditing(False, True)
 edit.startOperation()
 
-with arcpy.da.InsertCursor('vertices', ["SHAPE@", "longitude", "latitude"]) as cursor:
+with arcpy.da.InsertCursor(name_vertices, ["SHAPE@", "longitude", "latitude"]) as cursor:
     for row in arcpy.da.SearchCursor(selected_layer, ["SHAPE@"]):
         shape = row[0]
         if shape is not None:
@@ -62,6 +71,8 @@ with arcpy.da.InsertCursor('vertices', ["SHAPE@", "longitude", "latitude"]) as c
                         if point is not None:
                             x, y = point.X, point.Y
                             cursor.insertRow([point, x, y])
+                            line = arcpy.Polyline(arcpy.Array([arcpy.Point(x, y), arcpy.Point(x + 30, y + 30), arcpy.Point(x + 80, y + 30)]))
+                            make_annotation_line(line, x, y)
             elif shape.type == "point":
                 if shape.firstPoint is not None:
                     x, y = shape.firstPoint.X, shape.firstPoint.Y
@@ -71,6 +82,15 @@ edit.stopEditing(True)
 del mxd
 
 # show labels
-lyr = arcpy.mapping.Layer('vertices')
+lyr = arcpy.mapping.Layer(name_line)
 lyr.showLabels = True
 lyr.labelClasses[0].expression = '"X: " & [longitude] & " " & vbCrLf & "Y: " & [latitude]'
+
+
+# create annotation polyline
+'''
+line = arcpy.Polyline(arcpy.Array([arcpy.Point(0, 0), arcpy.Point(1, 1), arcpy.Point(2, 2)]))
+arcpy.CreateFeatureclass_management('in_memory', 'line', "POLYLINE")
+with arcpy.da.InsertCursor('line', ["SHAPE@"]) as cursor:
+    cursor.insertRow([line])
+    '''
