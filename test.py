@@ -11,8 +11,8 @@ def get_unique_name(base_name):
     return name
 
 def make_annotation_line(line, x, y):
-    with arcpy.da.InsertCursor(name_line, ["SHAPE@", "longitude", "latitude"]) as cursor:
-        cursor.insertRow([line, x, y])
+    with arcpy.da.InsertCursor(name_line, ["SHAPE@", "longitude", "latitude"]) as line_cursor:
+        line_cursor.insertRow([line, x, y])
 
 mxd = arcpy.mapping.MapDocument("CURRENT")
 layers = arcpy.mapping.ListLayers(mxd)
@@ -50,11 +50,14 @@ with arcpy.da.InsertCursor(name_vertices, ["SHAPE@", "longitude", "latitude"]) a
     for row in arcpy.da.SearchCursor(selected_layer, ["SHAPE@"]):
         shape = row[0]
         if shape is not None:
-            if shape.type == "multipoint":
+            if shape.type == 'point' or shape.type == "multipoint":
                 for point in shape:
                     if shape is not None:
                         x, y = point.X, point.Y
                         cursor.insertRow([point, x, y])
+                        line = arcpy.Polyline(
+                            arcpy.Array([arcpy.Point(x, y), arcpy.Point(x + 30, y + 30), arcpy.Point(x + 80, y + 30)]))
+                        make_annotation_line(line, x, y)
             elif shape.type == "polygon" or shape.type == "multipolygon":
                 for part in shape:
                     point_count = len(part)
@@ -65,6 +68,9 @@ with arcpy.da.InsertCursor(name_vertices, ["SHAPE@", "longitude", "latitude"]) a
                             else:
                                 x, y = point.X, point.Y
                                 cursor.insertRow([point, x, y])
+                                line = arcpy.Polyline(arcpy.Array(
+                                    [arcpy.Point(x, y), arcpy.Point(x + 30, y + 30), arcpy.Point(x + 80, y + 30)]))
+                                make_annotation_line(line, x, y)
             elif shape.type == "polyline" or shape.type == "multilinestring":
                 for part in shape:
                     for point in part:
@@ -73,10 +79,6 @@ with arcpy.da.InsertCursor(name_vertices, ["SHAPE@", "longitude", "latitude"]) a
                             cursor.insertRow([point, x, y])
                             line = arcpy.Polyline(arcpy.Array([arcpy.Point(x, y), arcpy.Point(x + 30, y + 30), arcpy.Point(x + 80, y + 30)]))
                             make_annotation_line(line, x, y)
-            elif shape.type == "point":
-                if shape.firstPoint is not None:
-                    x, y = shape.firstPoint.X, shape.firstPoint.Y
-                    cursor.insertRow([shape, x, y])
 
 edit.stopEditing(True)
 del mxd
@@ -85,7 +87,7 @@ del mxd
 lyr = arcpy.mapping.Layer(name_line)
 lyr.showLabels = True
 lyr.labelClasses[0].expression = '"X: " & [longitude] & " " & vbCrLf & "Y: " & [latitude]'
-
+arcpy.RefreshActiveView()
 
 # create annotation polyline
 '''
