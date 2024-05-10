@@ -94,3 +94,4 @@ class Tool1(object):
         lyr.showLabels = True
         lyr.labelClasses[0].expression = '"X: " & [longitude] & " " & vbCrLf & "Y: " & [latitude]'
         arcpy.RefreshActiveView()
+
