@@ -1,7 +1,7 @@
 # 🗺 arcPyGetCoord - ArcGIS Add-in
 
 ## 📍 Project Description
-getCoord is an ArcGIS add-in that allows ArcMap users to extract vertex coordinates 
+arcPyGetCoord is an ArcGIS add-in that allows ArcMap users to extract vertex coordinates 
 from selected geometries and display them in attribute tables and annotations. 
 Different versions offer unique functionalities and improvements.
 
