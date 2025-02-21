@@ -1,4 +1,4 @@
-# 🗺 getCoord - ArcGIS Add-in
+# 🗺 arcPyGetCoord - ArcGIS Add-in
 
 ## 📍 Project Description
 getCoord is an ArcGIS add-in that allows ArcMap users to extract vertex coordinates 
@@ -6,7 +6,7 @@ from selected geometries and display them in attribute tables and annotations.
 Different versions offer unique functionalities and improvements.
 
 ## 📂 Structure
-getCoord/ 
+arcPyGetCoord/ 
 ├── v1.0/ # Initial version 
 ├── v1.1/ # Improved polygon handling, multiple temporary layers 
 ├── v1.2/ # **Annotation** support, works **only** in projected CRS with meters 
