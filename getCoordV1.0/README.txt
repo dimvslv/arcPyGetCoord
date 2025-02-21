@@ -17,12 +17,18 @@ Install/*    : The Python project used for the implementation of the
                AddIn. The specific python script to be used as the root
                module is specified in config.xml.
 
-ЗАМЕТКИ
+NOTES
 ========
 
-1. Стартовая версия
-2. Работает в разных системах координат
-3. Каждую итерацию перезаписывает слой с точками
+## ✅ v1.0
+- Creates a temporary layer with annotations as polylines.
+- Records vertex coordinates in the attribute table and displays x, y labels.
+- Works **only in coordinate systems that use meters (projected CRS).**
+- Creates multiple temporary layers instead of overwriting.
 
-
-
+## 🚀 How to Install
+1. Clone the repository.
+2. Run the file: `..\getCoordV1.0\getCoord.esriaddin`
+3. Open or restart ArcMap.
+4. A new button should appear in the toolbar.
+5. Select objects, click the button, and get coordinates!

@@ -1,25 +1,50 @@
-This is a stub project created by the ArcGIS Desktop Python AddIn Wizard.
+# 🗺 getCoord - ArcGIS Add-in
 
-MANIFEST
-========
+## 📍 Project Description
+getCoord is an ArcGIS add-in that allows ArcMap users to extract vertex coordinates 
+from selected geometries and display them in attribute tables and annotations. 
+Different versions offer unique functionalities and improvements.
 
-README.txt   : This file
+## 📂 Structure
+getCoord/ 
+├── v1.0/ # Initial version 
+├── v1.1/ # Improved polygon handling, multiple temporary layers 
+├── v1.2/ # **Annotation** support, works **only** in projected CRS with meters 
+├── README.md # Project description 
+├── .gitignore # Ignored files
 
-makeaddin.py : A script that will create a .esriaddin file out of this
-               project, suitable for sharing or deployment
+## 🔄 Versions
 
-config.xml   : The AddIn configuration file
+### ✅ v1.0
+- Creates a temporary layer with points at the vertices of selected geometries.
+- Records vertex coordinates in the attribute table and displays x, y labels.
+- Supports all geometry types.
+- Works in different coordinate systems.
+- Overwrites the temporary layer on each iteration.
 
-Images/*     : all UI images for the project (icons, images for buttons,
-               etc)
+### ✅ v1.1
+- Same functionality as v1.0.
+- Fixed duplicated first and last points for "POLYGON" objects.
+- Creates multiple temporary layers instead of overwriting.
 
-Install/*    : The Python project used for the implementation of the
-               AddIn. The specific python script to be used as the root
-               module is specified in config.xml.
+### ✅ v1.2
+- Creates a temporary layer with annotations as polylines.
+- Records vertex coordinates in the attribute table and displays x, y labels.
+- Works **only in coordinate systems that use meters (projected CRS).**
+- Creates multiple temporary layers instead of overwriting.
 
-ЗАМЕТКИ
-========
+## 🔧 Technologies Used
+- **ArcGIS** – primary platform.
+- **Python** – scripting and automation.
+- **ArcPy** – ArcGIS Python API for geoprocessing.
 
-V1.2
+## 🚀 How to Use
+1. Choose the desired version from the repository.
+2. Follow the installation and usage instructions inside the version's `README.md` file.
 
-1. Cоздаёт аннотации в виде временного слоя типа "POLYLINE"
+## 📜 License
+This project is intended for educational and research use only.  
+Commercial use, redistribution, or modification without permission is not allowed. Please contact me for details.
+
+## 📧 Contact
+Email: wasilev1994@gmail.com | GitHub: dimvslv
